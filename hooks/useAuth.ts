@@ -13,7 +13,7 @@ export const useAuth = () => {
   const [authState, setAuthState] = useState<AuthState>({
     user: null,
     session: null,
-    loading: true,
+    loading: false, // Désactiver le loading pour éviter les redirections
     error: null,
   });
 

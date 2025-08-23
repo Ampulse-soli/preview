@@ -347,7 +347,7 @@ export interface SelectedItem {
 
 export interface Notification {
   id: number;
-  type: 'success' | 'warning' | 'info';
+  type: 'success' | 'warning' | 'info' | 'error';
   message: string;
   time: string;
 }

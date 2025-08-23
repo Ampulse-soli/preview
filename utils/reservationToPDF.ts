@@ -1,4 +1,4 @@
-import { Reservation, Hotel, OperateurSocial, DocumentTemplate } from '../types';
+import { Reservation, Hotel, OperateurSocial, DocumentTemplate } from '../types/index';
 import { 
   getSyntheticUserData, 
   getSyntheticHotelData, 

@@ -126,7 +126,7 @@ export default function ModificationHistory({
         const timestamp = new Date(now.getTime() - Math.random() * 30 * 24 * 60 * 60 * 1000);
         const agent = demoAgents[Math.floor(Math.random() * demoAgents.length)];
         const action = actions[Math.floor(Math.random() * actions.length)];
-        const module = modules[Math.floor(Math.random() * modules.length)];
+        const moduleType = modules[Math.floor(Math.random() * modules.length)];
         const reservation = Math.random() > 0.3 ? demoReservations[Math.floor(Math.random() * demoReservations.length)] : undefined;
 
         records.push({
@@ -135,8 +135,8 @@ export default function ModificationHistory({
           agent,
           reservation,
           action,
-          module,
-          description: actionDescriptions[action][module],
+          module: moduleType,
+          description: actionDescriptions[action][moduleType],
           details: `Action effectuée par ${agent.prenom} ${agent.nom} (${agent.role})`
         });
       }

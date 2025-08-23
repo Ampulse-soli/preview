@@ -11,7 +11,10 @@ export default function Error({
   reset: () => void;
 }) {
   useEffect(() => {
-    console.error('Erreur de l\'application:', error);
+    // Log error in development mode only
+    if (process.env.NODE_ENV === 'development') {
+      console.error('Application Error:', error);
+    }
   }, [error]);
 
   return (

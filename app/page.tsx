@@ -30,7 +30,7 @@ import {
   generateDocumentTemplates
 } from '../utils/dataGenerators';
 import { Calendar } from 'lucide-react';
-import { Hotel, Reservation, OperateurSocial, ConventionPrix, ProcessusReservation, Message, Conversation, DashboardStats, User, DocumentTemplate } from '../types';
+import { Hotel, Reservation, OperateurSocial, ConventionPrix, ProcessusReservation, Message, Conversation, DashboardStats, User, DocumentTemplate } from '../types/index';
 import { useNotifications } from '../hooks/useNotifications';
 import { supabase } from '../lib/supabase';
 
@@ -79,22 +79,6 @@ export default function Home() {
 
   const handleResetSettings = () => {
     addNotification('info', 'Paramètres réinitialisés');
-  };
-
-  const handleHotelSelect = (hotelId: number | null) => {
-    setSelectedHotel(hotelId);
-    if (hotelId) {
-      const hotel = hotels.find(h => h.id === hotelId);
-      addNotification('info', `Établissement sélectionné : ${hotel?.nom}`);
-    } else {
-      addNotification('info', 'Mode tous les établissements activé');
-    }
-  };
-
-  const handleHotelCreate = (hotel: Omit<Hotel, 'id'>) => {
-    const newHotel = { ...hotel, id: Math.max(...hotels.map(h => h.id), 0) + 1 };
-    setHotels(prev => [...prev, newHotel]);
-    addNotification('success', 'Établissement créé avec succès');
   };
 
   const handleReservationSelect = (reservation: Reservation) => {
@@ -186,7 +170,7 @@ export default function Home() {
           .order('nom');
 
         if (hotelsError) {
-          console.warn('Erreur lors du chargement des hôtels, utilisation des données de fallback:', hotelsError);
+          // Fallback to generated data if Supabase query fails
           const fallbackHotels = generateHotels();
           setHotels(fallbackHotels);
           transformedHotels = fallbackHotels;
@@ -231,7 +215,7 @@ export default function Home() {
           .order('nom');
 
         if (operateursError) {
-          console.warn('Erreur lors du chargement des opérateurs, utilisation des données de fallback:', operateursError);
+          // Fallback to generated data if Supabase query fails
           const fallbackOperateurs = generateOperateursSociaux();
           setOperateurs(fallbackOperateurs);
           transformedOperateurs = fallbackOperateurs;
@@ -266,7 +250,7 @@ export default function Home() {
         
         setIsLoading(false);
       } catch (error) {
-        console.error('Erreur lors du chargement des données:', error);
+        // Error occurred while loading data
         setError('Erreur lors du chargement des données');
         setIsLoading(false);
       }
@@ -283,7 +267,7 @@ export default function Home() {
         const parsedFeatures = JSON.parse(savedFeatures);
         setFeatures(parsedFeatures);
       } catch (error) {
-        console.error('Erreur lors du chargement des paramètres:', error);
+        // Error occurred while loading settings
       }
     }
   }, []);
@@ -378,7 +362,7 @@ export default function Home() {
           <ChambresPage 
             selectedHotel={selectedHotel ? hotels.find(h => h.id === selectedHotel) || null : null} 
             onActionClick={(action) => {
-              console.log('Action chambre:', action);
+              // Room action triggered
               addNotification('info', `Action chambre: ${action}`);
             }}
           />
@@ -393,7 +377,7 @@ export default function Home() {
           <div className="space-y-6">
             <ClientManagement
               onClientSelect={(client) => {
-                console.log('Client sélectionné:', client);
+                // Client selected
                 addNotification('info', `Client sélectionné : ${client.nom}`);
               }}
             />
@@ -464,8 +448,12 @@ export default function Home() {
                 role: user.role || 'utilisateur'
               }))}
               onFeatureToggle={handleFeatureToggle}
-              onHotelSelect={handleHotelSelect}
-              onHotelCreate={handleHotelCreate}
+              onHotelSelect={(hotelId) => setSelectedHotel(hotelId)}
+              onHotelCreate={(hotel) => {
+                const newHotel = { ...hotel, id: Math.max(...hotels.map(h => h.id), 0) + 1 };
+                setHotels(prev => [...prev, newHotel]);
+                addNotification('success', 'Établissement créé avec succès');
+              }}
               onSaveSettings={handleSaveSettings}
               onResetSettings={handleResetSettings}
               onUserCreate={handleUserCreate}

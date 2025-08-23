@@ -1,10 +1,9 @@
 "use client";
 
-import React, { useState, useMemo } from 'react';
+import React, { useState } from 'react';
 import { User, RoleDefinition, Hotel, UserRole } from '../../types';
 import { roleDefinitions } from '../../utils/dataGenerators';
 import RolePermissionsEditor from './RolePermissionsEditor';
-import { useRolePermissions } from '../../hooks/useRolePermissions';
 import { Button } from '../ui/button';
 import { Input } from '../ui/input';
 import { Label } from '../ui/label';
@@ -12,12 +11,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../ui
 import { Badge } from '../ui/badge';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '../ui/tabs';
 import { 
-  Users, 
   UserPlus, 
-  User as UserIcon, 
-  UserX, 
-  Shield, 
-  Eye, 
   Edit, 
   Trash2,
   CheckCircle,
@@ -30,7 +24,6 @@ import {
   X,
   AlertCircle,
   Search,
-  Filter,
   Lock,
   Unlock
 } from 'lucide-react';
@@ -352,7 +345,7 @@ export default function UsersManagement({
           <RolePermissionsEditor 
             onPermissionsChange={() => {
               // Recharger les données si nécessaire
-              console.log('Permissions mises à jour');
+              // Permissions updated successfully
             }}
           />
         </TabsContent>

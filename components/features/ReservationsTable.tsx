@@ -25,7 +25,6 @@ import {
   X
 } from 'lucide-react';
 import { Reservation, ProcessusReservation, Hotel, DocumentTemplate } from '../../types';
-import { PDFGenerator } from '../../utils/pdfGenerator';
 
 interface ReservationsTableProps {
   reservations: Reservation[];
@@ -180,9 +179,9 @@ export default function ReservationsTable({ reservations, processus, hotels = []
       };
 
       // TODO: Implémenter la génération de PDF
-      console.log('Génération de PDF pour la réservation:', reservation.id);
-      console.log('Template:', confirmationTemplate);
-      console.log('Variables:', variables);
+      // Generating PDF for reservation
+      // Using confirmation template
+      // Processing template variables
       
       // Simulation de génération de PDF
       alert('Fonctionnalité de génération de PDF à implémenter');
@@ -193,7 +192,7 @@ export default function ReservationsTable({ reservations, processus, hotels = []
       }
 
     } catch (error) {
-      console.error('Erreur lors de la confirmation:', error);
+      // Error occurred during confirmation
       alert('Erreur lors de la génération du PDF');
     }
   };

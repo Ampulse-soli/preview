@@ -1,6 +1,6 @@
 import jsPDF from 'jspdf';
 import html2canvas from 'html2canvas';
-import { DocumentTemplate, DocumentVariable } from '../types';
+import { DocumentTemplate, DocumentVariable } from '../types/index';
 import { getModernTemplate } from './modernTemplates';
 
 export interface PDFGenerationOptions {

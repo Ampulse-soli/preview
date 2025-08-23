@@ -1,4 +1,4 @@
-import { Hotel, Reservation, OperateurSocial, ConventionPrix, ProcessusReservation, Message, Conversation, User, RoleDefinition, DocumentTemplate, DocumentVariable } from '../types';
+import { Hotel, Reservation, OperateurSocial, ConventionPrix, ProcessusReservation, Message, Conversation, User, RoleDefinition, DocumentTemplate, DocumentVariable } from '../types/index';
 
 // Définitions des rôles
 export const roleDefinitions: RoleDefinition[] = [

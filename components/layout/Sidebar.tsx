@@ -11,12 +11,15 @@ import {
   FileText,
   ChevronDown,
   ChevronRight,
+  ChevronLeft,
   Calculator,
   Receipt,
   DollarSign,
   Download,
   Wrench,
-  Menu
+  Menu,
+  Grid3X3,
+  Bed
 } from 'lucide-react';
 import { useState } from 'react';
 
@@ -35,9 +38,9 @@ export default function Sidebar({ activeTab, onTabChange, features, selectedHote
   const [expandedComptabilite, setExpandedComptabilite] = useState(false);
   const [isExpanded, setIsExpanded] = useState(false);
 
-  // Protection contre les erreurs de rendu
+  // Protection contre les erreurs de rendu - utilisation de valeurs par défaut
   if (!features) {
-    console.warn('Sidebar: features is undefined, using defaults');
+    // Removed console.warn to clean up console output
   }
 
   const tabs = [
@@ -104,14 +107,7 @@ export default function Sidebar({ activeTab, onTabChange, features, selectedHote
 
   const currentFeatures = features || defaultFeatures;
 
-  const visibleTabs = tabs.filter(tab => {
-    try {
-      return tab.alwaysVisible;
-    } catch (error) {
-      console.error('Erreur lors du filtrage des onglets:', error);
-      return tab.alwaysVisible;
-    }
-  });
+  const visibleTabs = tabs.filter(tab => tab.alwaysVisible);
 
   const handleTabClick = (tabId: string) => {
     if (tabId === 'comptabilite') {
@@ -125,7 +121,20 @@ export default function Sidebar({ activeTab, onTabChange, features, selectedHote
     onTabChange(submenuId);
   };
 
-  const renderTab = (tab: any) => {
+  interface TabItem {
+    id: string;
+    label: string;
+    icon: React.ComponentType<{ className?: string }>;
+    alwaysVisible: boolean;
+    hasSubmenu?: boolean;
+    submenu?: Array<{
+      id: string;
+      label: string;
+      icon: React.ComponentType<{ className?: string }>;
+    }>;
+  }
+
+  const renderTab = (tab: TabItem) => {
     const Icon = tab.icon;
     const isActive = activeTab === tab.id;
     const isComptabiliteActive = activeTab.startsWith('comptabilite-');
@@ -159,9 +168,9 @@ export default function Sidebar({ activeTab, onTabChange, features, selectedHote
         </Button>
 
         {/* Sous-menu pour Comptabilité */}
-        {isExpanded && tab.hasSubmenu && tab.id === 'comptabilite' && expandedComptabilite && (
+        {isExpanded && tab.hasSubmenu && tab.id === 'comptabilite' && expandedComptabilite && tab.submenu && (
           <ul className="ml-2 mt-1 space-y-1">
-            {tab.submenu.map((subItem: any) => {
+            {tab.submenu.map((subItem) => {
               const SubIcon = subItem.icon;
               const isSubActive = activeTab === subItem.id;
 
@@ -195,27 +204,42 @@ export default function Sidebar({ activeTab, onTabChange, features, selectedHote
       className={`bg-white border-r border-gray-200 flex flex-col transition-all duration-300 ease-in-out ${
         isExpanded ? 'w-64' : 'w-16'
       }`}
-      onMouseEnter={() => setIsExpanded(true)}
-      onMouseLeave={() => setIsExpanded(false)}
     >
       {/* Header */}
       <div className={`border-b border-gray-200 transition-all duration-300 ${
         isExpanded ? 'p-4' : 'p-2'
       }`}>
         {isExpanded ? (
-          <>
-            <h1 className="text-lg font-bold text-gray-900 truncate">
-              {selectedHotel ? selectedHotel.nom : 'SoliReserve'}
-            </h1>
-            <p className="text-xs text-gray-600 truncate">
-              {selectedHotel ? 'Gestion hôtelière sociale' : 'Sélectionnez un établissement'}
-            </p>
-          </>
+          <div className="flex items-center justify-between">
+            <div className="flex-1">
+              <h1 className="text-lg font-bold text-gray-900 truncate">
+                {selectedHotel ? selectedHotel.nom : 'SoliReserve'}
+              </h1>
+              <p className="text-xs text-gray-600 truncate">
+                {selectedHotel ? 'Gestion hôtelière sociale' : 'Sélectionnez un établissement'}
+              </p>
+            </div>
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={() => setIsExpanded(false)}
+              className="ml-2 p-1 h-8 w-8"
+              title="Réduire le menu"
+            >
+              <ChevronLeft className="h-4 w-4" />
+            </Button>
+          </div>
         ) : (
           <div className="flex justify-center">
-            <div className="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center">
-              <Building2 className="h-4 w-4 text-white" />
-            </div>
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={() => setIsExpanded(true)}
+              className="p-1 h-8 w-8"
+              title="Développer le menu"
+            >
+              <Menu className="h-4 w-4" />
+            </Button>
           </div>
         )}
       </div>

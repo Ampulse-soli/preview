@@ -21,7 +21,6 @@ import { Label } from '../ui/label';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '../ui/tabs';
 import { Badge } from '../ui/badge';
 import { Alert, AlertDescription } from '../ui/alert';
-import { UserCheck } from 'lucide-react';
 
 interface ClientManagementProps {
   onClientSelect?: (client: Client) => void;
@@ -91,7 +90,7 @@ export default function ClientManagement({ onClientSelect, activeTab: externalAc
       if (error) throw error;
       setClientTypes(data || []);
     } catch (error) {
-      console.error('Erreur lors du chargement des types de clients:', error);
+      // Removed console.error to clean up console output
     }
   };
 
@@ -103,7 +102,7 @@ export default function ClientManagement({ onClientSelect, activeTab: externalAc
       if (error) throw error;
       setStatistics(data?.[0] || null);
     } catch (error) {
-      console.error('Erreur lors du chargement des statistiques:', error);
+      // Removed console.error to clean up console output
     }
   };
 
@@ -121,7 +120,7 @@ export default function ClientManagement({ onClientSelect, activeTab: externalAc
       if (error) throw error;
       setClients(data || []);
     } catch (error) {
-      console.error('Erreur lors de la recherche de clients:', error);
+      // Removed console.error to clean up console output
     } finally {
       setLoading(false);
     }
@@ -153,7 +152,7 @@ export default function ClientManagement({ onClientSelect, activeTab: externalAc
       setActiveTab('details');
       onClientSelect?.(data);
     } catch (error) {
-      console.error('Erreur lors du chargement des détails du client:', error);
+      // Removed console.error to clean up console output
     }
   };
 
@@ -513,14 +512,14 @@ function AddClientForm({
         };
         
         onClientAdded(newClient);
-        console.log('Client ajouté avec succès:', data);
+        // Client added successfully
       } else if (data && !data.success) {
         // Afficher les erreurs de validation
-        console.error('Erreurs de validation:', data.errors);
+        // Validation errors occurred
         alert('Erreurs de validation: ' + (data.errors?.join(', ') || data.message));
       }
     } catch (error: any) {
-      console.error('Erreur lors de l\'ajout du client:', error);
+      // Error occurred during client creation
       alert('Erreur lors de l\'ajout du client: ' + (error.message || 'Erreur inconnue'));
     } finally {
       setLoading(false);
@@ -816,7 +815,7 @@ function ClientDetails({
         alert('Erreur lors de la mise à jour: ' + (data?.message || 'Erreur inconnue'));
       }
     } catch (error: any) {
-      console.error('Erreur lors de la mise à jour:', error);
+      // Error occurred during client update
       alert('Erreur lors de la mise à jour: ' + (error.message || 'Erreur inconnue'));
     } finally {
       setLoading(false);

@@ -1,10 +1,10 @@
 import { useState, useCallback } from 'react';
-import { Notification } from '../types';
+import { Notification } from '../types/index';
 
 export function useNotifications() {
   const [notifications, setNotifications] = useState<Notification[]>([]);
 
-  const addNotification = useCallback((type: 'success' | 'warning' | 'info', message: string) => {
+  const addNotification = useCallback((type: 'success' | 'warning' | 'info' | 'error', message: string) => {
     const newNotification: Notification = {
       id: Date.now(),
       type,
