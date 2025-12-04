@@ -204,20 +204,20 @@ export default function Home() {
             }
           } else {
             // Transformer les données Supabase pour correspondre au format attendu
-            transformedHotels = hotelsData?.map(hotel => ({
-              id: hotel.id,
-              nom: hotel.nom,
-              adresse: hotel.adresse,
-              ville: hotel.ville,
-              codePostal: hotel.code_postal,
-              telephone: hotel.telephone || '',
-              email: hotel.email || '',
-              gestionnaire: hotel.gestionnaire || 'Non spécifié',
-              statut: hotel.statut || 'ACTIF',
-              chambresTotal: hotel.chambres_total || 0,
-              chambresOccupees: hotel.chambres_occupees || 0,
-              tauxOccupation: hotel.taux_occupation || 0
-            })) || [];
+            transformedHotels = (hotelsData?.map((hotel: any) => ({
+              id: hotel.id as number,
+              nom: hotel.nom as string,
+              adresse: hotel.adresse as string,
+              ville: hotel.ville as string,
+              codePostal: hotel.code_postal as string,
+              telephone: (hotel.telephone || '') as string,
+              email: (hotel.email || '') as string,
+              gestionnaire: (hotel.gestionnaire || 'Non spécifié') as string,
+              statut: (hotel.statut || 'ACTIF') as string,
+              chambresTotal: (hotel.chambres_total || 0) as number,
+              chambresOccupees: (hotel.chambres_occupees || 0) as number,
+              tauxOccupation: (hotel.taux_occupation || 0) as number
+            })) || []) as Hotel[];
 
             setHotels(transformedHotels);
             
@@ -242,20 +242,20 @@ export default function Home() {
             transformedOperateurs = fallbackOperateurs;
           } else {
             // Transformer les données Supabase pour correspondre au format attendu
-            transformedOperateurs = operateursData?.map(operateur => ({
-              id: operateur.id,
-              nom: operateur.nom,
-              prenom: operateur.prenom,
-              organisation: operateur.type_organisme,
-              telephone: operateur.telephone,
-              email: operateur.email,
-              statut: operateur.statut,
+            transformedOperateurs = (operateursData?.map((operateur: any) => ({
+              id: operateur.id as number,
+              nom: operateur.nom as string,
+              prenom: operateur.prenom as string,
+              organisation: (operateur.type_organisme || operateur.organisation || '') as string,
+              telephone: (operateur.telephone || '') as string,
+              email: (operateur.email || '') as string,
+              statut: (operateur.statut || 'actif') as string,
               specialite: 'Accompagnement global',
-              zoneIntervention: operateur.ville,
+              zoneIntervention: (operateur.ville || operateur.zone_intervention || '') as string,
               nombreReservations: 0,
               dateCreation: operateur.created_at ? new Date(operateur.created_at).toLocaleDateString('fr-FR') : '',
               notes: ''
-            })) || [];
+            })) || []) as OperateurSocial[];
 
             setOperateurs(transformedOperateurs);
           }

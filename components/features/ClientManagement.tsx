@@ -88,7 +88,7 @@ export default function ClientManagement({ onClientSelect, activeTab: externalAc
         .order('ordre');
 
       if (error) throw error;
-      setClientTypes(data || []);
+      setClientTypes((data as unknown as ClientType[]) || []);
     } catch (error) {
       // Removed console.error to clean up console output
     }
@@ -100,7 +100,8 @@ export default function ClientManagement({ onClientSelect, activeTab: externalAc
         .rpc('get_client_statistics');
 
       if (error) throw error;
-      setStatistics(data?.[0] || null);
+      const statsData = data as any;
+      setStatistics(Array.isArray(statsData) ? statsData[0] || null : statsData || null);
     } catch (error) {
       // Removed console.error to clean up console output
     }
@@ -118,7 +119,7 @@ export default function ClientManagement({ onClientSelect, activeTab: externalAc
         });
 
       if (error) throw error;
-      setClients(data || []);
+      setClients((data as unknown as ClientSearchResult[]) || []);
     } catch (error) {
       // Removed console.error to clean up console output
     } finally {
@@ -148,9 +149,9 @@ export default function ClientManagement({ onClientSelect, activeTab: externalAc
         .single();
 
       if (error) throw error;
-      setSelectedClient(data);
+      setSelectedClient(data as unknown as ClientWithDetails);
       setActiveTab('details');
-      onClientSelect?.(data);
+      onClientSelect?.(data as unknown as ClientWithDetails);
     } catch (error) {
       // Removed console.error to clean up console output
     }
