@@ -4,11 +4,40 @@ import { createClient } from '@supabase/supabase-js'
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL
 const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
 
-if (!supabaseUrl || !supabaseAnonKey) {
-  throw new Error('Missing Supabase environment variables. Please check your .env.local file.')
+// Mode mock si les variables d'environnement ne sont pas définies
+const USE_MOCK_DATA = !supabaseUrl || !supabaseAnonKey
+
+// Créer un client mock ou réel selon la configuration
+// Utiliser une URL valide pour le mock pour éviter les erreurs de validation
+let supabaseClient: ReturnType<typeof createClient>
+
+try {
+  if (USE_MOCK_DATA) {
+    // Créer un client mock avec une URL valide mais qui ne sera pas utilisé
+    supabaseClient = createClient('https://placeholder.supabase.co', 'mock-anon-key', {
+      auth: {
+        persistSession: false,
+        autoRefreshToken: false,
+      },
+    })
+  } else {
+    supabaseClient = createClient(supabaseUrl as string, supabaseAnonKey as string)
+  }
+} catch (error) {
+  // En cas d'erreur, créer un client mock de secours
+  console.warn('Erreur lors de la création du client Supabase, utilisation du mode mock:', error)
+  supabaseClient = createClient('https://placeholder.supabase.co', 'mock-anon-key', {
+    auth: {
+      persistSession: false,
+      autoRefreshToken: false,
+    },
+  })
 }
 
-export const supabase = createClient(supabaseUrl, supabaseAnonKey)
+export const supabase = supabaseClient
+
+// Export du flag pour que les composants sachent qu'on utilise des données mockées
+export const isMockMode = USE_MOCK_DATA
 
 // Types générés pour Supabase
 export interface Database {

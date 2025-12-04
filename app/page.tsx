@@ -153,7 +153,7 @@ export default function Home() {
     }
   };
 
-  // Chargement des données depuis Supabase
+  // Chargement des données depuis Supabase ou données synthétiques
   useEffect(() => {
     const loadDataFromSupabase = async () => {
       setIsLoading(true);
@@ -163,80 +163,102 @@ export default function Home() {
       let transformedOperateurs: OperateurSocial[] = [];
       
       try {
-        // Charger les hôtels depuis Supabase
-        const { data: hotelsData, error: hotelsError } = await supabase
-          .from('hotels')
-          .select('*')
-          .order('nom');
-
-        if (hotelsError) {
-          // Fallback to generated data if Supabase query fails
+        // Vérifier si on est en mode mock (pas de variables d'environnement Supabase)
+        const isMockMode = !process.env.NEXT_PUBLIC_SUPABASE_URL || !process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+        
+        if (isMockMode) {
+          // Utiliser directement les données synthétiques
+          console.log('Mode mock activé : utilisation des données synthétiques');
           const fallbackHotels = generateHotels();
           setHotels(fallbackHotels);
           transformedHotels = fallbackHotels;
+          
+          const fallbackOperateurs = generateOperateursSociaux();
+          setOperateurs(fallbackOperateurs);
+          transformedOperateurs = fallbackOperateurs;
           
           // Sélectionner automatiquement le premier établissement par défaut
           if (fallbackHotels.length > 0 && !selectedHotel) {
             const firstHotel = fallbackHotels[0];
             setSelectedHotel(firstHotel.id);
-            addNotification('info', `Établissement par défaut sélectionné : ${firstHotel.nom}`);
+            addNotification('info', `Mode démo : Établissement par défaut sélectionné : ${firstHotel.nom}`);
           }
         } else {
-          // Transformer les données Supabase pour correspondre au format attendu
-          transformedHotels = hotelsData?.map(hotel => ({
-            id: hotel.id,
-            nom: hotel.nom,
-            adresse: hotel.adresse,
-            ville: hotel.ville,
-            codePostal: hotel.code_postal,
-            telephone: hotel.telephone || '',
-            email: hotel.email || '',
-            gestionnaire: hotel.gestionnaire || 'Non spécifié',
-            statut: hotel.statut || 'ACTIF',
-            chambresTotal: hotel.chambres_total || 0,
-            chambresOccupees: hotel.chambres_occupees || 0,
-            tauxOccupation: hotel.taux_occupation || 0
-          })) || [];
+          // Charger les hôtels depuis Supabase
+          const { data: hotelsData, error: hotelsError } = await supabase
+            .from('hotels')
+            .select('*')
+            .order('nom');
 
-          setHotels(transformedHotels);
-          
-          // Sélectionner automatiquement le premier établissement par défaut
-          if (transformedHotels.length > 0 && !selectedHotel) {
-            const firstHotel = transformedHotels[0];
-            setSelectedHotel(firstHotel.id);
-            addNotification('info', `Établissement par défaut sélectionné : ${firstHotel.nom}`);
+          if (hotelsError) {
+            // Fallback to generated data if Supabase query fails
+            const fallbackHotels = generateHotels();
+            setHotels(fallbackHotels);
+            transformedHotels = fallbackHotels;
+            
+            // Sélectionner automatiquement le premier établissement par défaut
+            if (fallbackHotels.length > 0 && !selectedHotel) {
+              const firstHotel = fallbackHotels[0];
+              setSelectedHotel(firstHotel.id);
+              addNotification('info', `Établissement par défaut sélectionné : ${firstHotel.nom}`);
+            }
+          } else {
+            // Transformer les données Supabase pour correspondre au format attendu
+            transformedHotels = hotelsData?.map(hotel => ({
+              id: hotel.id,
+              nom: hotel.nom,
+              adresse: hotel.adresse,
+              ville: hotel.ville,
+              codePostal: hotel.code_postal,
+              telephone: hotel.telephone || '',
+              email: hotel.email || '',
+              gestionnaire: hotel.gestionnaire || 'Non spécifié',
+              statut: hotel.statut || 'ACTIF',
+              chambresTotal: hotel.chambres_total || 0,
+              chambresOccupees: hotel.chambres_occupees || 0,
+              tauxOccupation: hotel.taux_occupation || 0
+            })) || [];
+
+            setHotels(transformedHotels);
+            
+            // Sélectionner automatiquement le premier établissement par défaut
+            if (transformedHotels.length > 0 && !selectedHotel) {
+              const firstHotel = transformedHotels[0];
+              setSelectedHotel(firstHotel.id);
+              addNotification('info', `Établissement par défaut sélectionné : ${firstHotel.nom}`);
+            }
           }
-        }
 
-        // Charger les opérateurs sociaux depuis Supabase
-        const { data: operateursData, error: operateursError } = await supabase
-          .from('operateurs_sociaux')
-          .select('*')
-          .order('nom');
+          // Charger les opérateurs sociaux depuis Supabase
+          const { data: operateursData, error: operateursError } = await supabase
+            .from('operateurs_sociaux')
+            .select('*')
+            .order('nom');
 
-        if (operateursError) {
-          // Fallback to generated data if Supabase query fails
-          const fallbackOperateurs = generateOperateursSociaux();
-          setOperateurs(fallbackOperateurs);
-          transformedOperateurs = fallbackOperateurs;
-        } else {
-          // Transformer les données Supabase pour correspondre au format attendu
-          transformedOperateurs = operateursData?.map(operateur => ({
-            id: operateur.id,
-            nom: operateur.nom,
-            prenom: operateur.prenom,
-            organisation: operateur.type_organisme,
-            telephone: operateur.telephone,
-            email: operateur.email,
-            statut: operateur.statut,
-            specialite: 'Accompagnement global',
-            zoneIntervention: operateur.ville,
-            nombreReservations: 0,
-            dateCreation: operateur.created_at ? new Date(operateur.created_at).toLocaleDateString('fr-FR') : '',
-            notes: ''
-          })) || [];
+          if (operateursError) {
+            // Fallback to generated data if Supabase query fails
+            const fallbackOperateurs = generateOperateursSociaux();
+            setOperateurs(fallbackOperateurs);
+            transformedOperateurs = fallbackOperateurs;
+          } else {
+            // Transformer les données Supabase pour correspondre au format attendu
+            transformedOperateurs = operateursData?.map(operateur => ({
+              id: operateur.id,
+              nom: operateur.nom,
+              prenom: operateur.prenom,
+              organisation: operateur.type_organisme,
+              telephone: operateur.telephone,
+              email: operateur.email,
+              statut: operateur.statut,
+              specialite: 'Accompagnement global',
+              zoneIntervention: operateur.ville,
+              nombreReservations: 0,
+              dateCreation: operateur.created_at ? new Date(operateur.created_at).toLocaleDateString('fr-FR') : '',
+              notes: ''
+            })) || [];
 
-          setOperateurs(transformedOperateurs);
+            setOperateurs(transformedOperateurs);
+          }
         }
 
         // Utiliser les données de fallback pour les autres tables (à implémenter plus tard)
