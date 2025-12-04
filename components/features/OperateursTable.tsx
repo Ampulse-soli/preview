@@ -181,7 +181,7 @@ export default function OperateursTable({ operateurs, onOperateurSelect, onAddOp
         return;
       }
 
-      setRealClients(data || []);
+      setRealClients((data as unknown as ClientType[]) || []);
     } catch (error) {
       console.error('Erreur lors du chargement des clients:', error);
     } finally {
@@ -252,7 +252,8 @@ export default function OperateursTable({ operateurs, onOperateurSelect, onAddOp
         return;
       }
 
-      if (data && data.success) {
+      const result = data as any;
+      if (result && result.success) {
         setEditSuccess('Client modifié avec succès !');
         await loadRealClients(); // Recharger les données
         setTimeout(() => {
@@ -261,7 +262,7 @@ export default function OperateursTable({ operateurs, onOperateurSelect, onAddOp
           setEditFormData({});
         }, 2000);
       } else {
-        setEditError(data?.message || 'Erreur lors de la modification');
+        setEditError(result?.message || 'Erreur lors de la modification');
       }
     } catch (error: any) {
       setEditError('Erreur lors de la modification: ' + error.message);

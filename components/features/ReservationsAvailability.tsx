@@ -156,7 +156,8 @@ export default function ReservationsAvailability({ reservations, hotels, selecte
         setAvailableRooms(getSimulatedRooms());
       } else {
         // Transformer les données pour correspondre au format attendu
-        const transformedRooms = data.map((room: any) => ({
+        const roomsData = data as any[];
+        const transformedRooms = roomsData.map((room: any) => ({
           hotel: room.hotel_nom,
           hotelAddress: room.hotel_adresse,
           hotelVille: room.hotel_ville,

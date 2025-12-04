@@ -151,7 +151,7 @@ export default function ClientManagement({ onClientSelect, activeTab: externalAc
       if (error) throw error;
       setSelectedClient(data as unknown as ClientWithDetails);
       setActiveTab('details');
-      onClientSelect?.(data as unknown as ClientWithDetails);
+      onClientSelect?.(data as unknown as Client);
     } catch (error) {
       // Removed console.error to clean up console output
     }
@@ -487,11 +487,12 @@ function AddClientForm({
 
       if (error) throw error;
       
-      if (data && data.success) {
+      const result = data as any;
+      if (result && result.success) {
         // Créer un objet client pour la compatibilité
         const newClient = {
-          id: data.client_id,
-          numero_client: data.numero_client,
+          id: result.client_id,
+          numero_client: result.numero_client,
           nom: formData.nom || '',
           prenom: formData.prenom || '',
           raison_sociale: formData.raison_sociale || '',
@@ -514,10 +515,10 @@ function AddClientForm({
         
         onClientAdded(newClient);
         // Client added successfully
-      } else if (data && !data.success) {
+      } else if (result && !result.success) {
         // Afficher les erreurs de validation
         // Validation errors occurred
-        alert('Erreurs de validation: ' + (data.errors?.join(', ') || data.message));
+        alert('Erreurs de validation: ' + (result.errors?.join(', ') || result.message));
       }
     } catch (error: any) {
       // Error occurred during client creation
@@ -808,12 +809,13 @@ function ClientDetails({
 
       if (error) throw error;
       
-      if (data && data.success) {
+      const updateResult = data as any;
+      if (updateResult && updateResult.success) {
         setIsEditing(false);
         onClientUpdated();
         alert('Client mis à jour avec succès');
       } else {
-        alert('Erreur lors de la mise à jour: ' + (data?.message || 'Erreur inconnue'));
+        alert('Erreur lors de la mise à jour: ' + (updateResult?.message || 'Erreur inconnue'));
       }
     } catch (error: any) {
       // Error occurred during client update

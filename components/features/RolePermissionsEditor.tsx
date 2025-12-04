@@ -146,14 +146,14 @@ export default function RolePermissionsEditor({ onPermissionsChange }: RolePermi
 
       if (permissionsError) throw permissionsError;
 
-      setModules(modulesData || []);
-      setActions(actionsData || []);
-      setRoles(rolesData || []);
-      setPermissions(permissionsData || []);
+      setModules((modulesData as any[]) || []);
+      setActions((actionsData as any[]) || []);
+      setRoles((rolesData as any[]) || []);
+      setPermissions((permissionsData as any[]) || []);
 
       // Sélectionner le premier rôle par défaut
-      if (rolesData && rolesData.length > 0) {
-        setSelectedRole(rolesData[0].id);
+      if (rolesData && (rolesData as any[]).length > 0) {
+        setSelectedRole((rolesData as any[])[0].id);
       }
 
     } catch (err) {
